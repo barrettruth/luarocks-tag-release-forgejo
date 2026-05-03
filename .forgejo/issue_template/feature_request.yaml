@@ -1,0 +1,17 @@
+name: Feature Request
+about: Request an improvement to the Forgejo LuaRocks release action.
+title: ""
+labels: []
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution
+    validations:
+      required: true

@@ -1,0 +1,99 @@
+---
+name: 'Forgejo LuaRocks tag release'
+description: 'Publish a Forgejo-hosted package to LuaRocks'
+author: 'nvim-neorocks'
+branding:
+  color: 'purple'
+  icon: 'moon'
+inputs:
+  name:
+    description: "The name of the your package"
+    required: true
+    default: ${{ github.event.repository.name }}
+  version:
+    description: |
+      The version of your package. Uses the git tag by default (if one exists).
+      Can also be set to `null`, `"scm"` or `"dev"` to publish a development rockspec.
+    required: false
+    default: ${{ github.ref_name }}
+  specrev:
+    description: |
+      The rockspec revision. Defaults to '1', resulting in <version>-1 as the <modrev>-<specrev>.
+    required: false
+    default: "1"
+  dependencies:
+    description: "List of LuaRocks dependencies."
+    required: false
+  test_dependencies:
+    description: "List of test suite dependencies."
+    required: false
+  labels:
+    description: "List of package labels."
+    required: false
+  copy_directories:
+    description: |
+      List of additional directories to copy.
+      Only directories that exist will be copied.
+      The defaults are taken from Neovim's `:help runtimepath`
+      WARNING: Do not add the directories `lua`, `lib` or `rock_manifest`.
+    required: true
+    default: |
+      {{ neovim.plugin.dirs }}
+  summary:
+    description: "Short description of the package."
+    required: false
+  detailed_description:
+    description: "Detailed description of the package."
+    required: false
+  template:
+    description: "Path to a rockspec template."
+    required: false
+  license:
+    description: |
+      The license SPDX identifier.
+      By default, it will be fetched from GitHub.
+      But sometimes, GitHub does not recognise it,
+      in which case LuaRocks will fall back to this one.
+    required: false
+  extra_luarocks_args:
+    description: |
+      Extra args to pass to the luarocks command.
+      For example: "CURL_DIR=/usr/include/x86_64-linux-gnu/"
+    required: false
+  fail_on_duplicate:
+    description: |
+      Whether to fail if the rock's version has already been published to `luarocks.org`.
+    required: false
+  verification_servers:
+    description: |
+      Newline-separated LuaRocks servers to try when verifying the uploaded package.
+      Defaults to the LuaRocks root server. Development rocks usually need the uploader
+      manifest, for example https://luarocks.org/manifests/barrettruth.
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Install LuaRocks publisher
+      run: |
+        nix profile install --quiet --accept-flake-config "${{ github.action_path }}#luarocks-tag-release-action"
+      shell: bash
+
+    - name: Publish to LuaRocks
+      run: luarocks-tag-release-action
+      env:
+        INPUT_NAME: ${{ inputs.name }}
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_SPECREV: ${{ inputs.specrev }}
+        INPUT_DEPENDENCIES: ${{ inputs.dependencies }}
+        INPUT_TEST_DEPENDENCIES: ${{ inputs.test_dependencies }}
+        INPUT_LABELS: ${{ inputs.labels }}
+        INPUT_COPY_DIRECTORIES: ${{ inputs.copy_directories }}
+        INPUT_SUMMARY: ${{ inputs.summary }}
+        INPUT_DETAILED_DESCRIPTION: ${{ inputs.detailed_description }}
+        INPUT_TEMPLATE: ${{ inputs.template }}
+        INPUT_LICENSE: ${{ inputs.license }}
+        INPUT_EXTRA_LUAROCKS_ARGS: ${{ inputs.extra_luarocks_args }}
+        INPUT_FAIL_ON_DUPLICATE: ${{ inputs.fail_on_duplicate }}
+        INPUT_VERIFICATION_SERVERS: ${{ inputs.verification_servers }}
+        RUNNER_DEBUG: ${{ runner.debug }}
+      shell: bash

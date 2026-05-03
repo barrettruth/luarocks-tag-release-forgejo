@@ -1,0 +1,17 @@
+name: Bug Report
+about: Report a problem with the Forgejo LuaRocks release action.
+title: ""
+labels: []
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+    validations:
+      required: true

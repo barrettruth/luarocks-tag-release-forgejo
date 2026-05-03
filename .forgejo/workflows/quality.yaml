@@ -1,0 +1,23 @@
+name: quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build
+    runs-on: nix
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build action package
+        run: nix build --accept-flake-config .#luarocks-tag-release-action
+
+  test:
+    name: Test
+    runs-on: nix
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run flake checks
+        run: nix flake check --accept-flake-config
