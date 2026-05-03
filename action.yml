@@ -73,13 +73,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install LuaRocks publisher
-      run: |
-        nix profile install --quiet --accept-flake-config "${{ github.action_path }}#luarocks-tag-release-action"
-      shell: bash
-
     - name: Publish to LuaRocks
-      run: luarocks-tag-release-action
+      run: nix run --accept-flake-config "${{ github.action_path }}#luarocks-tag-release-action"
       env:
         INPUT_NAME: ${{ inputs.name }}
         INPUT_VERSION: ${{ inputs.version }}
