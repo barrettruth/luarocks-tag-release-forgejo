@@ -1,8 +1,12 @@
+---@class ltr.Parser
+---@field parse_list_args fun(str: string): string[]
+---@field parse_copy_directory_args fun(str_args: string): string[]
 local Parser = {}
 
 ---@param str string
 ---@return string[] list_arg
 function Parser.parse_list_args(str)
+  ---@type string[]
   local tbl = {}
   for arg in string.gmatch(str, '[^%s*][^\r\n]+') do
     table.insert(tbl, arg)
@@ -12,7 +16,9 @@ end
 
 ---Insert Neovim plugin directories into the `copy_directories` list
 ---@param copy_directories string[] List of directories
+---@return nil
 local function insert_neovim_plugin_dirs(copy_directories)
+  ---@type string[]
   local neovim_plugin_dirs = {
     'after',
     'autoload',
@@ -45,6 +51,7 @@ end
 ---@return string[] copy_directories The directories to copy
 function Parser.parse_copy_directory_args(str_args)
   local args = Parser.parse_list_args(str_args)
+  ---@type string[]
   local copy_directories = {}
   for _, arg in pairs(args) do
     if string.match(arg, '{{ neovim%.plugin%.dirs }}') ~= nil then

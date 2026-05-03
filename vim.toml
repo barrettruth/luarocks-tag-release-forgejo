@@ -1,0 +1,45 @@
+[selene]
+base = "lua51"
+name = "vim"
+
+[vim]
+any = true
+
+[assert]
+any = true
+
+[describe]
+any = true
+
+[it]
+any = true
+
+[before_each]
+any = true
+
+[after_each]
+any = true
+
+[package]
+any = true
+
+[rockspec_format]
+any = true
+
+[version]
+any = true
+
+[description]
+any = true
+
+[dependencies]
+any = true
+
+[test_dependencies]
+any = true
+
+[source]
+any = true
+
+[build]
+any = true

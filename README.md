@@ -15,7 +15,7 @@ layout:
 ## Stable Releases
 
 ```yaml
-- uses: https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo@v0.1.0
+- uses: https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo@v0.1.3
   with:
     license: GPL-3.0
     verification_servers: |
@@ -29,7 +29,7 @@ layout:
 - name: Compute LuaRocks specrev
   run: echo "LUAROCKS_SPECREV=$(git rev-list --count "$GITHUB_SHA")" >> "$GITHUB_ENV"
 
-- uses: https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo@v0.1.0
+- uses: https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo@v0.1.3
   with:
     version: scm
     specrev: ${{ env.LUAROCKS_SPECREV }}
@@ -44,3 +44,12 @@ layout:
 Development rocks uploaded to LuaRocks are visible immediately in the uploader
 manifest. The global `/dev` manifest can lag or omit freshly uploaded versions,
 so workflows should verify against the uploader manifest first.
+
+# Acknowledgements
+
+- [`nvim-neorocks/luarocks-tag-release`](https://github.com/nvim-neorocks/luarocks-tag-release) -
+  upstream LuaRocks publishing action and rockspec generation flow
+- [`LuaRocks`](https://luarocks.org) - package hosting, upload API, and
+  stable/development manifests
+- [`nixpkgs`](https://github.com/NixOS/nixpkgs) - reproducible action runtime
+  and Forgejo runner tooling

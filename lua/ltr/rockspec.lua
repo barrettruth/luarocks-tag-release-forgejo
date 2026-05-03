@@ -1,3 +1,5 @@
+---@class ltr.Rockspec
+---@field generate fun(package_name: string, modrev: string, specrev: string, rockspec_template: string, meta: GenerateMeta): string
 local Rockspec = {}
 
 ---@param t string[]
@@ -24,7 +26,27 @@ end
 ---@field labels string[] List of labels to add to the rockspec.
 ---@field copy_directories string[] List of directories to add to the rockspec's copy_directories.
 ---@field repo_name string The repository name.
----@field github_event_tbl any|nil GitHub event metadata, read from GITHUB_EVENT_PATH and decoded from JSON
+---@field github_event_tbl GithubEvent|nil GitHub event metadata, read from GITHUB_EVENT_PATH and decoded from JSON
+
+---@class GithubEventLicense
+---@field spdx_id string?
+
+---@class GithubEventRepository
+---@field license GithubEventLicense?
+---@field source GithubEventRepository?
+---@field description string?
+---@field topics string[]?
+---@field homepage string?
+
+---@class GithubEventPullRequestHead
+---@field repo GithubEventRepository?
+
+---@class GithubEventPullRequest
+---@field head GithubEventPullRequestHead?
+
+---@class GithubEvent
+---@field repository GithubEventRepository?
+---@field pull_request GithubEventPullRequest?
 
 ---Generate a rockspec from a template
 ---@param package_name string The name of the LuaRocks package.
@@ -57,6 +79,7 @@ function Rockspec.generate(package_name, modrev, specrev, rockspec_template, met
   local repo_url = meta.git_server_url .. '/' .. meta.github_repo
   local homepage = repo_url
   local license = ''
+  ---@type GithubEventRepository?
   local repo_meta = meta.github_event_tbl
     and (
       meta.github_event_tbl.pull_request
@@ -85,8 +108,9 @@ function Rockspec.generate(package_name, modrev, specrev, rockspec_template, met
     if #meta.labels == 0 then
       meta.labels = repo_meta.topics and repo_meta.topics or {}
     end
-    if repo_meta.homepage and repo_meta.homepage ~= '' then
-      homepage = repo_meta.homepage
+    local repo_homepage = repo_meta.homepage
+    if repo_homepage and repo_homepage ~= '' then
+      homepage = repo_homepage
     end
   elseif meta.license then
     license = 'license = "' .. meta.license .. '"'

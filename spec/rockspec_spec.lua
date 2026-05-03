@@ -36,11 +36,13 @@ build = {
 ]]
 
 ---@param rockspec_str string The rockspec content
+---@return nil
 local function load_rockspec(rockspec_str)
   local rockspec_module = assert(loadstring(rockspec_str), 'Could not load generated rockspec')
   rockspec_module()
 end
 
+---@return string
 local function read_default_template()
   local file = assert(io.open('resources/rockspec.template', 'r'))
   local contents = file:read('*a')
@@ -49,6 +51,7 @@ local function read_default_template()
 end
 
 describe('Rockspec', function()
+  ---@type ltr.Rockspec
   local Rockspec = require('ltr.rockspec')
   ---@type GenerateMeta
   local meta = {

@@ -1,4 +1,13 @@
+---@alias ltr.FailureHandler fun(error_msg: string): nil
+
+---@class ltr.OS
+---@field read_file fun(filename: string): string?
+---@field file_exists fun(filename: string): boolean
+---@field write_file fun(filename: string, content: string): nil
+---@field execute fun(cmd: string, on_failure?: ltr.FailureHandler, verbose?: boolean): string, string
+---@field filter_existing_directories fun(directories: string[]): string[]
 local OS = {}
+
 ---@param filename string
 ---@return string? content
 function OS.read_file(filename)
@@ -32,7 +41,7 @@ function OS.write_file(filename, content)
 end
 
 ---@param cmd string
----@param on_failure fun(error_msg:string)?
+---@param on_failure ltr.FailureHandler?
 ---@param verbose boolean|nil If true, will print stdout and stderr
 ---@return string stdout, string stderr
 function OS.execute(cmd, on_failure, verbose)
@@ -57,6 +66,7 @@ end
 ---@param directories string[] List of directories.
 ---@return string[] existing_directories
 function OS.filter_existing_directories(directories)
+  ---@type string[]
   local existing_directories = {}
   for _, dir in pairs(directories) do
     if require('lfs').attributes(dir, 'mode') == 'directory' then

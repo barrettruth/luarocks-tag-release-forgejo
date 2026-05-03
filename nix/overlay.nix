@@ -1,7 +1,9 @@
-{self}: final: prev:
+{ self }:
+final: prev:
 with final.pkgs;
 with final.lib;
-with final.stdenv; let
+with final.stdenv;
+let
   luarocks-tag-release-action-wrapped = pkgs.lua51Packages.buildLuaApplication {
     pname = "luarocks-tag-release";
     version = "scm-1";
@@ -33,13 +35,14 @@ with final.stdenv; let
       luarocks-tag-release-action-wrapped
       unzip
       zip
-      (lua5_1.withPackages (luaPkgs:
-        with luaPkgs; [
+      (lua5_1.withPackages (
+        luaPkgs: with luaPkgs; [
           luarocks
           luafilesystem
           luarocks-build-rust-mlua
           luarocks-build-treesitter-parser
-        ]))
+        ]
+      ))
     ];
 
     text = ''
@@ -49,7 +52,8 @@ with final.stdenv; let
     # The default checkPhase depends on ShellCheck, which depends on GHC
     checkPhase = "";
   };
-in {
+in
+{
   inherit
     luarocks-tag-release-action
     ;

@@ -1,12 +1,19 @@
 assert(os.getenv('LUAROCKS_API_KEY'), 'LUAROCKS_API_KEY secret not set')
 
+---@type ltr.Parser
 local Parser = require('ltr.parser')
+
+---@type ltr.OS
 local OS = require('ltr.os')
 
+---@param env_var string
+---@return string
 local function getenv_or_err(env_var)
   return assert(os.getenv(env_var), env_var .. ' not set.')
 end
 
+---@param env_var string
+---@return string
 local function getenv_or_empty(env_var)
   return os.getenv(env_var) or ''
 end
@@ -30,7 +37,7 @@ local is_pull_request = getenv_or_empty('GITHUB_EVENT_NAME') == 'pull_request'
 local license_input = os.getenv('INPUT_LICENSE')
 local template_input = os.getenv('INPUT_TEMPLATE')
 local package_name = getenv_or_err('INPUT_NAME')
----@type string | nil
+---@type string|nil
 local package_version = is_pull_request and '0.0.0' or os.getenv('INPUT_VERSION')
 
 ---@type Args
@@ -59,6 +66,7 @@ local args = {
   fail_on_duplicate = getenv_or_empty('INPUT_FAIL_ON_DUPLICATE') == 'true',
 }
 
+---@return string
 local function get_github_sha()
   return os.getenv('GITHUB_SHA_OVERRIDE') or getenv_or_err('GITHUB_SHA')
 end

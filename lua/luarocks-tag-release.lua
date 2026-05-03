@@ -27,6 +27,7 @@
 ---@param package_version string | nil The version of the LuaRocks package.
 ---@param specrev string the version of the rockspec
 ---@param args Args
+---@return nil
 local function luarocks_tag_release(package_name, package_version, specrev, args)
   package_name = package_name:lower()
   -- version in format 3.0 must follow the format '[%w.]+-[%d]+' or be 'dev' or 'scm'
@@ -40,6 +41,7 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
 
   print('Luarocks flags and args: ' .. luarocks_extra_flags_and_args)
 
+  ---@type ltr.OS
   local OS = require('ltr.os')
 
   ---@return string tmp_dir The temp directory in which to install the package
@@ -60,6 +62,7 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
     return rockspec_file_path
   end
 
+  ---@return nil
   local function setup_luarocks_paths()
     print('Getting luarocks path info')
     local luarocks_path_output, _ = OS.execute('luarocks path', error, args.is_debug)
@@ -67,6 +70,7 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
     OS.execute(luarocks_path_output, error, args.is_debug)
   end
 
+  ---@return nil
   local function test_install_rockspec()
     local tmp_dir, luarocks_install_cmd = mk_luarocks_install_cmd()
     local cmd = luarocks_install_cmd .. ' ' .. rockspec_file_path .. luarocks_extra_flags_and_args
@@ -103,6 +107,7 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
     print(stdout)
   end
 
+  ---@return nil
   local function test_install_package()
     local verification_servers = args.verification_servers
     if #verification_servers == 0 then
@@ -149,7 +154,7 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
       .. ' for: '
       .. package_name
       .. ' version '
-      .. package_version
+      .. tostring(package_version)
       .. ' from ref '
       .. args.git_ref
       .. '.'
@@ -158,8 +163,11 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
   local github_event_data = args.github_event_path and OS.read_file(args.github_event_path)
   local json = require('dkjson')
 
+  ---@type GithubEvent?
   local github_event_tbl = github_event_data and json.decode(github_event_data)
-  local rockspec = require('ltr.rockspec').generate(package_name, modrev, specrev, rockspec_template, {
+  ---@type ltr.Rockspec
+  local Rockspec = require('ltr.rockspec')
+  local rockspec = Rockspec.generate(package_name, modrev, specrev, rockspec_template, {
     ref_type = args.ref_type,
     git_server_url = args.git_server_url,
     github_repo = args.github_repo,

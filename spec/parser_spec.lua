@@ -1,4 +1,5 @@
 describe('Parser', function()
+  ---@type ltr.Parser
   local Parser = require('ltr.parser')
   it('Parse list args', function()
     local args = [[

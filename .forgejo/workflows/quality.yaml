@@ -2,22 +2,29 @@ name: quality
 
 on:
   pull_request:
+    branches: [main]
   push:
     branches: [main]
 
 jobs:
-  build:
-    name: Build
+  format:
+    name: Format
     runs-on: nix
     steps:
       - uses: actions/checkout@v4
-      - name: Build action package
-        run: nix build --accept-flake-config .#luarocks-tag-release-action
-
+      - name: Format
+        run: nix develop --accept-flake-config .#ci --command just format
+  lint:
+    name: Lint
+    runs-on: nix
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint
+        run: nix develop --accept-flake-config .#ci --command just lint
   test:
     name: Test
     runs-on: nix
     steps:
       - uses: actions/checkout@v4
-      - name: Run flake checks
-        run: nix flake check --accept-flake-config
+      - name: Test
+        run: nix develop --accept-flake-config .#ci --command just test
