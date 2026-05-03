@@ -88,7 +88,7 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
       .. luarocks_extra_flags_and_args
     print('UPLOAD: ' .. cmd)
     local stdout, _ = OS.execute(cmd, function(message)
-      if message:find('already exists on the server') and not args.fail_on_duplicate then
+      if message:lower():find('already exists') and not args.fail_on_duplicate then
         print(
           string.format(
             '%s already exists with version %s on the remote. Doing nothing (`fail_on_duplicate` is false).',
