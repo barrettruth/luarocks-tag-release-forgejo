@@ -41,6 +41,13 @@ local function load_rockspec(rockspec_str)
   rockspec_module()
 end
 
+local function read_default_template()
+  local file = assert(io.open('resources/rockspec.template', 'r'))
+  local contents = file:read('*a')
+  file:close()
+  return contents
+end
+
 describe('Rockspec', function()
   local Rockspec = require('ltr.rockspec')
   ---@type GenerateMeta
@@ -71,6 +78,16 @@ describe('Rockspec', function()
     assert.same(source.url, 'https://github.com/nvim-neorocks/luarocks-tag-release/archive/1.0.0.zip')
     assert.same(source.dir, 'luarocks-tag-release')
     assert.same(dependencies, { 'lua >= 5.1' })
+  end)
+  it('Generate scm from an archive URL', function()
+    meta.ref_type = 'branch'
+    meta.git_ref = '0123456789abcdef'
+    load_rockspec(Rockspec.generate('test_package', 'scm', '1081', read_default_template(), meta))
+    assert.same(version, 'scm-1081')
+    assert.same(source.url, 'https://github.com/nvim-neorocks/luarocks-tag-release/archive/0123456789abcdef.zip')
+    assert.same(source.dir, 'luarocks-tag-release')
+    meta.ref_type = 'tag'
+    meta.git_ref = '1.0.0'
   end)
   it('Generate (with license)', function()
     meta.license = 'AGPL3'
