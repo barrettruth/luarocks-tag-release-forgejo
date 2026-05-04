@@ -14,5 +14,9 @@ test:
     busted
     nix build --accept-flake-config .#luarocks-tag-release-action
 
+build-aarch64:
+    test "$(nix eval --impure --raw --expr builtins.currentSystem)" = aarch64-linux
+    nix build --accept-flake-config .#packages.aarch64-linux.luarocks-tag-release-action
+
 ci: format lint test
     @:
