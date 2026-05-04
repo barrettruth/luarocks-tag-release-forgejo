@@ -1,5 +1,3 @@
-assert(os.getenv('LUAROCKS_API_KEY'), 'LUAROCKS_API_KEY secret not set')
-
 ---@type ltr.Parser
 local Parser = require('ltr.parser')
 
@@ -18,8 +16,12 @@ local function getenv_or_empty(env_var)
   return os.getenv(env_var) or ''
 end
 
-local action_path = getenv_or_err('GITHUB_ACTION_PATH')
+local is_pull_request = getenv_or_empty('GITHUB_EVENT_NAME') == 'pull_request'
+if not is_pull_request then
+  assert(os.getenv('LUAROCKS_API_KEY'), 'LUAROCKS_API_KEY secret not set')
+end
 
+local action_path = getenv_or_err('GITHUB_ACTION_PATH')
 local github_repo = os.getenv('GITHUB_REPOSITORY_OVERRIDE') or getenv_or_err('GITHUB_REPOSITORY')
 
 local repo_name = assert(
@@ -31,8 +33,6 @@ local repo_name = assert(
 )
 
 local git_server_url = os.getenv('GIT_SERVER_URL_OVERRIDE') or getenv_or_err('GITHUB_SERVER_URL')
-
-local is_pull_request = getenv_or_empty('GITHUB_EVENT_NAME') == 'pull_request'
 
 local license_input = os.getenv('INPUT_LICENSE')
 local template_input = os.getenv('INPUT_TEMPLATE')
