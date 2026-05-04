@@ -45,6 +45,10 @@ Development rocks uploaded to LuaRocks are visible immediately in the uploader
 manifest. The global `/dev` manifest can lag or omit freshly uploaded versions,
 so workflows should verify against the uploader manifest first.
 
+`extra_luarocks_args` is parsed as newline-separated argv entries and shell
+quoted before execution. For LuaRocks flags that take a separate value, put the
+flag and value on separate lines or use `--flag=value`.
+
 # Acknowledgements
 
 - [`nvim-neorocks/luarocks-tag-release`](https://github.com/nvim-neorocks/luarocks-tag-release) -

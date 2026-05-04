@@ -57,7 +57,9 @@ inputs:
     required: false
   extra_luarocks_args:
     description: |
-      Extra args to pass to the luarocks command.
+      Newline-separated extra argv entries to pass to LuaRocks.
+      For a flag with a separate value, put the flag and value on separate lines
+      or use --flag=value.
       For example: "CURL_DIR=/usr/include/x86_64-linux-gnu/"
     required: false
   fail_on_duplicate:

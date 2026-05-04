@@ -35,21 +35,55 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
 
   local rockspec_file_path = package_name .. '-' .. modrev .. '-' .. specrev .. '.rockspec'
 
-  local luarocks_extra_flags_and_args = ' '
-    .. table.concat(args.extra_luarocks_args, ' ')
-    .. (args.is_debug and ' --verbose ' or '')
-
-  print('Luarocks flags and args: ' .. luarocks_extra_flags_and_args)
-
   ---@type ltr.OS
   local OS = require('ltr.os')
 
+  local extra_luarocks_args = {}
+  for _, arg in ipairs(args.extra_luarocks_args) do
+    extra_luarocks_args[#extra_luarocks_args + 1] = arg
+  end
+  if args.is_debug then
+    extra_luarocks_args[#extra_luarocks_args + 1] = '--verbose'
+  end
+
+  print('Luarocks flags and args: ' .. OS.command(extra_luarocks_args))
+
+  ---@param base_args string[]
+  ---@param additional_args string[]
+  ---@return string[]
+  local function append_args(base_args, additional_args)
+    local result = {}
+    for _, arg in ipairs(base_args) do
+      result[#result + 1] = arg
+    end
+    for _, arg in ipairs(additional_args) do
+      result[#result + 1] = arg
+    end
+    return result
+  end
+
+  ---@param cmd string
+  ---@return string
+  local function append_extra_luarocks_args(cmd)
+    local rendered_extra_args = OS.command(extra_luarocks_args)
+    if rendered_extra_args == '' then
+      return cmd
+    end
+    return cmd .. ' ' .. rendered_extra_args
+  end
+
+  ---@param command_args string[]
+  ---@return string
+  local function luarocks_cmd(command_args)
+    return append_extra_luarocks_args(OS.command(command_args))
+  end
+
   ---@return string tmp_dir The temp directory in which to install the package
-  ---@return string luarocks_install_cmd The luarocks install command for installing in tmp_dir
-  local function mk_luarocks_install_cmd()
-    local tmp_dir = OS.execute('mktemp -d', error, args.is_debug):gsub('\n', '')
-    local luarocks_install_cmd = 'luarocks install --tree ' .. tmp_dir
-    return tmp_dir, luarocks_install_cmd
+  ---@return string[] luarocks_install_args The luarocks install command args for installing in tmp_dir
+  local function mk_luarocks_install_args()
+    local tmp_dir = OS.execute(OS.command { 'mktemp', '-d' }, error, args.is_debug):gsub('\n', '')
+    local luarocks_install_args = { 'luarocks', 'install', '--tree', tmp_dir }
+    return tmp_dir, luarocks_install_args
   end
 
   ---Creates a rockspec and performs a local test install
@@ -65,19 +99,19 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
   ---@return nil
   local function setup_luarocks_paths()
     print('Getting luarocks path info')
-    local luarocks_path_output, _ = OS.execute('luarocks path', error, args.is_debug)
+    local luarocks_path_output, _ = OS.execute(OS.command { 'luarocks', 'path' }, error, args.is_debug)
     print('Setting up luarocks paths')
     OS.execute(luarocks_path_output, error, args.is_debug)
   end
 
   ---@return nil
   local function test_install_rockspec()
-    local tmp_dir, luarocks_install_cmd = mk_luarocks_install_cmd()
-    local cmd = luarocks_install_cmd .. ' ' .. rockspec_file_path .. luarocks_extra_flags_and_args
+    local tmp_dir, luarocks_install_args = mk_luarocks_install_args()
+    local cmd = luarocks_cmd(append_args(luarocks_install_args, { rockspec_file_path }))
     print('TEST: ' .. cmd)
     local stdout, _ = OS.execute(cmd, error, args.is_debug)
     print(stdout)
-    cmd = 'luarocks remove --tree ' .. tmp_dir .. ' ' .. package_name .. luarocks_extra_flags_and_args
+    cmd = luarocks_cmd { 'luarocks', 'remove', '--tree', tmp_dir, package_name }
     print('TEST: ' .. cmd)
     stdout, _ = OS.execute(cmd, error, args.is_debug)
     print(stdout)
@@ -86,10 +120,9 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
   ---@param target_rockspec_path string
   ---@return nil
   local function luarocks_upload(target_rockspec_path)
-    local cmd = 'luarocks upload '
-      .. target_rockspec_path
-      .. ' --api-key $LUAROCKS_API_KEY'
-      .. luarocks_extra_flags_and_args
+    local cmd = append_extra_luarocks_args(
+      OS.command { 'luarocks', 'upload', target_rockspec_path, '--api-key' } .. ' "$LUAROCKS_API_KEY"'
+    )
     print('UPLOAD: ' .. cmd)
     local stdout, _ = OS.execute(cmd, function(message)
       if message:lower():find('already exists') and not args.fail_on_duplicate then
@@ -117,15 +150,11 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
     local install_version = modrev .. '-' .. specrev
     local last_error = nil
     for _, server in ipairs(verification_servers) do
-      local _, luarocks_install_cmd = mk_luarocks_install_cmd()
-      local server_arg = server ~= '' and ' --server=' .. server or ''
-      local cmd = luarocks_install_cmd
-        .. server_arg
-        .. ' '
-        .. package_name
-        .. ' '
-        .. install_version
-        .. luarocks_extra_flags_and_args
+      local _, luarocks_install_args = mk_luarocks_install_args()
+      if server ~= '' then
+        luarocks_install_args[#luarocks_install_args + 1] = '--server=' .. server
+      end
+      local cmd = luarocks_cmd(append_args(luarocks_install_args, { package_name, install_version }))
       print('TEST: ' .. cmd)
       local ok, stdout = pcall(function()
         local output, _ = OS.execute(cmd, error, args.is_debug)
