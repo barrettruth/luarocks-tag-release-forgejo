@@ -5,8 +5,7 @@ Forgejo-compatible wrapper around
 
 > [!NOTE]
 > Due to GitHub's historic unreliability, development, issues, and pull requests
-> are hosted on [Forgejo](https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo).
-> GitHub is only a compatibility mirror.
+> have moved to [Forgejo](https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo).
 
 This action keeps the upstream Lua publisher implementation, but changes the
 parts that are specific to Barrett's Forgejo runners and Forgejo archive
