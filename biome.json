@@ -16,7 +16,7 @@
     "lineEnding": "lf",
     "lineWidth": 80,
     "useEditorconfig": true,
-    "includes": ["**", "!CHANGELOG.md"]
+    "includes": ["**", "!CHANGELOG.md", "!.forgejo/pull_request_template.md"]
   },
   "linter": {
     "enabled": false
