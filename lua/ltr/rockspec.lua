@@ -14,9 +14,9 @@ local function list_has_lua(t)
 end
 
 ---@class (exact) GenerateMeta
----@field ref_type github_ref_type
----@field git_server_url string The github server's URL.
----@field github_repo string The github repository (owner/repo_name).
+---@field ref_type forgejo_ref_type
+---@field git_server_url string The git server's URL.
+---@field forgejo_repo string The forgejo repository (owner/repo_name).
 ---@field license string|nil License SPDX ID (optional).
 ---@field git_ref string E.g. a tag or a commit sha.
 ---@field summary string Package summary.
@@ -26,27 +26,27 @@ end
 ---@field labels string[] List of labels to add to the rockspec.
 ---@field copy_directories string[] List of directories to add to the rockspec's copy_directories.
 ---@field repo_name string The repository name.
----@field github_event_tbl GithubEvent|nil GitHub event metadata, read from GITHUB_EVENT_PATH and decoded from JSON
+---@field forgejo_event_tbl ForgejoEvent|nil Forgejo event metadata, read from FORGEJO_EVENT_PATH and decoded from JSON
 
----@class GithubEventLicense
+---@class ForgejoEventLicense
 ---@field spdx_id string?
 
----@class GithubEventRepository
----@field license GithubEventLicense?
----@field source GithubEventRepository?
+---@class ForgejoEventRepository
+---@field license ForgejoEventLicense?
+---@field source ForgejoEventRepository?
 ---@field description string?
 ---@field topics string[]?
 ---@field homepage string?
 
----@class GithubEventPullRequestHead
----@field repo GithubEventRepository?
+---@class ForgejoEventPullRequestHead
+---@field repo ForgejoEventRepository?
 
----@class GithubEventPullRequest
----@field head GithubEventPullRequestHead?
+---@class ForgejoEventPullRequest
+---@field head ForgejoEventPullRequestHead?
 
----@class GithubEvent
----@field repository GithubEventRepository?
----@field pull_request GithubEventPullRequest?
+---@class ForgejoEvent
+---@field repository ForgejoEventRepository?
+---@field pull_request ForgejoEventPullRequest?
 
 ---Generate a rockspec from a template
 ---@param package_name string The name of the LuaRocks package.
@@ -76,22 +76,21 @@ function Rockspec.generate(package_name, modrev, specrev, rockspec_template, met
     return '[[\n' .. table.concat(xs, '\n') .. ']]'
   end
 
-  local repo_url = meta.git_server_url .. '/' .. meta.github_repo
+  local repo_url = meta.git_server_url .. '/' .. meta.forgejo_repo
   local homepage = repo_url
   local license = ''
-  ---@type GithubEventRepository?
-  local repo_meta = meta.github_event_tbl
+  ---@type ForgejoEventRepository?
+  local repo_meta = meta.forgejo_event_tbl
     and (
-      meta.github_event_tbl.pull_request
-        and meta.github_event_tbl.pull_request.head
-        and meta.github_event_tbl.pull_request.head.repo
-      or meta.github_event_tbl.repository
+      meta.forgejo_event_tbl.pull_request
+        and meta.forgejo_event_tbl.pull_request.head
+        and meta.forgejo_event_tbl.pull_request.head.repo
+      or meta.forgejo_event_tbl.repository
     )
   local on_missing_license = [[
     Could not get the license SPDX ID from repository event metadata.
     Please add a license file your forge can recognize,
     or specify the license type as a workflow input.
-    See: https://github.com/nvim-neorocks/luarocks-tag-release#license
     ]]
   if repo_meta then
     local repo_license = repo_meta.license or repo_meta.source and repo_meta.source.license

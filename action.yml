@@ -9,13 +9,13 @@ inputs:
   name:
     description: "The name of the your package"
     required: true
-    default: ${{ github.event.repository.name }}
+    default: ${{ forgejo.event.repository.name }}
   version:
     description: |
       The version of your package. Uses the git tag by default (if one exists).
       Can also be set to `null`, `"scm"` or `"dev"` to publish a development rockspec.
     required: false
-    default: ${{ github.ref_name }}
+    default: ${{ forgejo.ref_name }}
   specrev:
     description: |
       The rockspec revision. Defaults to '1', resulting in <version>-1 as the <modrev>-<specrev>.
@@ -76,7 +76,7 @@ runs:
   using: "composite"
   steps:
     - name: Publish to LuaRocks
-      run: nix run --accept-flake-config "${{ github.action_path }}#luarocks-tag-release-action"
+      run: nix run --accept-flake-config "${{ forgejo.action_path }}#luarocks-tag-release-action"
       env:
         INPUT_NAME: ${{ inputs.name }}
         INPUT_VERSION: ${{ inputs.version }}

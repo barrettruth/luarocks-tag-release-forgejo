@@ -1,13 +1,13 @@
 #!/usr/bin/env lua
 
----@alias github_ref_type 'tag' | 'branch'
+---@alias forgejo_ref_type 'tag' | 'branch'
 
 ---@class (exact) Args
 ---@field repo_name string The repository name.
----@field github_repo string The github repository (owner/repo_name).
----@field git_server_url string The github server's URL.
+---@field forgejo_repo string The forgejo repository (owner/repo_name).
+---@field git_server_url string The git server's URL.
 ---@field git_ref string E.g. a tag or a commit sha.
----@field ref_type github_ref_type
+---@field ref_type forgejo_ref_type
 ---@field dependencies string[] List of LuaRocks package dependencies.
 ---@field test_dependencies string[] List of test suite dependencies.
 ---@field labels string[] List of labels to add to the rockspec.
@@ -19,7 +19,7 @@
 ---@field license string|nil License SPDX ID (optional).
 ---@field extra_luarocks_args string[]
 ---@field verification_servers string[] LuaRocks servers to try when verifying uploaded packages.
----@field github_event_path string|nil The path to the file on the runner that contains the full event webhook payload. For example, /github/workflow/event.json.
+---@field forgejo_event_path string|nil The path to the file on the runner that contains the full event webhook payload.
 ---@field is_debug boolean Whether to enable debug logging
 ---@field fail_on_duplicate boolean Whether to fail if the rock version has already been uploaded.
 
@@ -189,17 +189,17 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
       .. '.'
   )
 
-  local github_event_data = args.github_event_path and OS.read_file(args.github_event_path)
+  local forgejo_event_data = args.forgejo_event_path and OS.read_file(args.forgejo_event_path)
   local json = require('dkjson')
 
-  ---@type GithubEvent?
-  local github_event_tbl = github_event_data and json.decode(github_event_data)
+  ---@type ForgejoEvent?
+  local forgejo_event_tbl = forgejo_event_data and json.decode(forgejo_event_data)
   ---@type ltr.Rockspec
   local Rockspec = require('ltr.rockspec')
   local rockspec = Rockspec.generate(package_name, modrev, specrev, rockspec_template, {
     ref_type = args.ref_type,
     git_server_url = args.git_server_url,
-    github_repo = args.github_repo,
+    forgejo_repo = args.forgejo_repo,
     license = args.license,
     git_ref = args.git_ref,
     summary = args.summary,
@@ -209,7 +209,7 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
     labels = args.labels,
     copy_directories = args.copy_directories,
     repo_name = args.repo_name,
-    github_event_tbl = github_event_tbl,
+    forgejo_event_tbl = forgejo_event_tbl,
   })
 
   print('')

@@ -56,8 +56,8 @@ describe('Rockspec', function()
   ---@type GenerateMeta
   local meta = {
     ref_type = 'tag',
-    git_server_url = 'https://github.com',
-    github_repo = 'nvim-neorocks/luarocks-tag-release',
+    git_server_url = 'https://git.barrettruth.com',
+    forgejo_repo = 'barrettruth/luarocks-tag-release-forgejo',
     git_ref = '1.0.0',
     summary = 'test summary',
     detailed_description_lines = { 'a line', 'another line' },
@@ -75,10 +75,10 @@ describe('Rockspec', function()
       summary = 'test summary',
       detailed = 'a line\nanother line',
       labels = { 'neovim' },
-      homepage = 'https://github.com/nvim-neorocks/luarocks-tag-release',
+      homepage = 'https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo',
     })
     assert.same(build.copy_directories, { 'plugin' })
-    assert.same(source.url, 'https://github.com/nvim-neorocks/luarocks-tag-release/archive/1.0.0.zip')
+    assert.same(source.url, 'https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo/archive/1.0.0.zip')
     assert.same(source.dir, 'luarocks-tag-release')
     assert.same(dependencies, { 'lua >= 5.1' })
   end)
@@ -87,7 +87,10 @@ describe('Rockspec', function()
     meta.git_ref = '0123456789abcdef'
     load_rockspec(Rockspec.generate('test_package', 'scm', '1081', read_default_template(), meta))
     assert.same(version, 'scm-1081')
-    assert.same(source.url, 'https://github.com/nvim-neorocks/luarocks-tag-release/archive/0123456789abcdef.zip')
+    assert.same(
+      source.url,
+      'https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo/archive/0123456789abcdef.zip'
+    )
     assert.same(source.dir, 'luarocks-tag-release')
     meta.ref_type = 'tag'
     meta.git_ref = '1.0.0'
