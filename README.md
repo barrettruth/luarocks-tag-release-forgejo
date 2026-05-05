@@ -4,8 +4,9 @@ Forgejo-compatible wrapper around
 [`nvim-neorocks/luarocks-tag-release`](https://github.com/nvim-neorocks/luarocks-tag-release).
 
 > [!NOTE]
-> Due to GitHub's historic unreliability, development, issues, and pull requests
-> have moved to [Forgejo](https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo).
+> Due to GitHub's historic unreliability, active development is hosted on
+> [Forgejo](https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo).
+> GitHub is maintained as a read-only mirror.
 
 This action keeps the upstream Lua publisher implementation, but changes the
 parts that are specific to Barrett's Forgejo runners and Forgejo archive
