@@ -88,8 +88,8 @@ function Rockspec.generate(package_name, modrev, specrev, rockspec_template, met
       or meta.github_event_tbl.repository
     )
   local on_missing_license = [[
-    Could not get the license SPDX ID from the GitHub API.
-    Please add a license file that GitHub can recognise or add a `license` input,
+    Could not get the license SPDX ID from repository event metadata.
+    Please add a license file your forge can recognize,
     or specify the license type as a workflow input.
     See: https://github.com/nvim-neorocks/luarocks-tag-release#license
     ]]

@@ -51,9 +51,9 @@ inputs:
   license:
     description: |
       The license SPDX identifier.
-      By default, it will be fetched from GitHub.
-      But sometimes, GitHub does not recognise it,
-      in which case LuaRocks will fall back to this one.
+      By default, it is read from Forgejo Actions repository metadata.
+      Some forges do not provide a recognized SPDX ID,
+      in which case LuaRocks will fall back to this input.
     required: false
   extra_luarocks_args:
     description: |

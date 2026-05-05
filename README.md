@@ -3,6 +3,11 @@
 Forgejo-compatible wrapper around
 [`nvim-neorocks/luarocks-tag-release`](https://github.com/nvim-neorocks/luarocks-tag-release).
 
+> [!NOTE]
+> Due to GitHub's historic unreliability, development, issues, and pull requests
+> are hosted on [Forgejo](https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo).
+> GitHub is only a compatibility mirror.
+
 This action keeps the upstream Lua publisher implementation, but changes the
 parts that are specific to Barrett's Forgejo runners and Forgejo archive
 layout:
@@ -15,7 +20,7 @@ layout:
 ## Stable Releases
 
 ```yaml
-- uses: https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo@v0.1.3
+- uses: https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo@v0.2.0
   with:
     license: GPL-3.0
     verification_servers: |
@@ -27,9 +32,9 @@ layout:
 
 ```yaml
 - name: Compute LuaRocks specrev
-  run: echo "LUAROCKS_SPECREV=$(git rev-list --count "$GITHUB_SHA")" >> "$GITHUB_ENV"
+  run: echo "LUAROCKS_SPECREV=$(git rev-list --count "$FORGEJO_SHA")" >> "$FORGEJO_ENV"
 
-- uses: https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo@v0.1.3
+- uses: https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo@v0.2.0
   with:
     version: scm
     specrev: ${{ env.LUAROCKS_SPECREV }}
