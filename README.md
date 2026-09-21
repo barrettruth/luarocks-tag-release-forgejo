@@ -5,7 +5,7 @@ Forgejo-compatible wrapper around
 
 > [!NOTE]
 > Due to GitHub's historic unreliability, active development is hosted on
-> [Forgejo](https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo).
+> [Forgejo](https://forge.barrettruth.com/barrettruth/luarocks-tag-release-forgejo).
 > GitHub is maintained as a read-only mirror.
 
 This action keeps the upstream Lua publisher implementation, but changes the
@@ -20,7 +20,7 @@ layout:
 ## Stable Releases
 
 ```yaml
-- uses: https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo@v0.2.0
+- uses: https://forge.barrettruth.com/barrettruth/luarocks-tag-release-forgejo@v0.2.0
   with:
     license: GPL-3.0
     verification_servers: |
@@ -34,7 +34,7 @@ layout:
 - name: Compute LuaRocks specrev
   run: echo "LUAROCKS_SPECREV=$(git rev-list --count "$FORGEJO_SHA")" >> "$FORGEJO_ENV"
 
-- uses: https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo@v0.2.0
+- uses: https://forge.barrettruth.com/barrettruth/luarocks-tag-release-forgejo@v0.2.0
   with:
     version: scm
     specrev: ${{ env.LUAROCKS_SPECREV }}

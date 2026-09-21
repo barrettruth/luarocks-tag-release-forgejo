@@ -56,7 +56,7 @@ describe('Rockspec', function()
   ---@type GenerateMeta
   local meta = {
     ref_type = 'tag',
-    git_server_url = 'https://git.barrettruth.com',
+    git_server_url = 'https://forge.barrettruth.com',
     forgejo_repo = 'barrettruth/luarocks-tag-release-forgejo',
     git_ref = '1.0.0',
     summary = 'test summary',
@@ -75,10 +75,10 @@ describe('Rockspec', function()
       summary = 'test summary',
       detailed = 'a line\nanother line',
       labels = { 'neovim' },
-      homepage = 'https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo',
+      homepage = 'https://forge.barrettruth.com/barrettruth/luarocks-tag-release-forgejo',
     })
     assert.same(build.copy_directories, { 'plugin' })
-    assert.same(source.url, 'https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo/archive/1.0.0.zip')
+    assert.same(source.url, 'https://forge.barrettruth.com/barrettruth/luarocks-tag-release-forgejo/archive/1.0.0.zip')
     assert.same(source.dir, 'luarocks-tag-release')
     assert.same(dependencies, { 'lua >= 5.1' })
   end)
@@ -89,7 +89,7 @@ describe('Rockspec', function()
     assert.same(version, 'scm-1081')
     assert.same(
       source.url,
-      'https://git.barrettruth.com/barrettruth/luarocks-tag-release-forgejo/archive/0123456789abcdef.zip'
+      'https://forge.barrettruth.com/barrettruth/luarocks-tag-release-forgejo/archive/0123456789abcdef.zip'
     )
     assert.same(source.dir, 'luarocks-tag-release')
     meta.ref_type = 'tag'
