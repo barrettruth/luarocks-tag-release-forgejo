@@ -3,10 +3,6 @@
 Forgejo-compatible wrapper around
 [`nvim-neorocks/luarocks-tag-release`](https://github.com/nvim-neorocks/luarocks-tag-release).
 
-> [!NOTE]
-> Development is hosted on
-> [Forgejo](https://forge.barrettruth.com/barrettruth/luarocks-tag-release-forgejo).
-
 This action keeps the upstream Lua publisher implementation, but changes the
 parts that are specific to Barrett's Forgejo runners and Forgejo archive
 layout:
