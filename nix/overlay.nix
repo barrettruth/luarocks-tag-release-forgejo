@@ -21,7 +21,7 @@ let
 
     meta = {
       description = "Publish Lua packages to LuaRocks";
-      homepage = "https://github.com/nvim-neorocks/luarocks-tag-release";
+      homepage = "https://forge.barrettruth.com/barrettruth/luarocks-tag-release-forgejo";
       license = licenses.agpl3Only;
     };
 

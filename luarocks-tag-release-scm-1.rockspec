@@ -5,8 +5,8 @@ version = _MODREV .. _SPECREV
 
 description = {
   summary = 'Build and upload LuaRocks packages from Git tags',
-  homepage = 'http://github.com/mrcjkb/' .. package,
-  license = 'MIT',
+  homepage = 'https://forge.barrettruth.com/barrettruth/luarocks-tag-release-forgejo',
+  license = 'GPL-3.0',
 }
 
 dependencies = {
@@ -22,7 +22,7 @@ test_dependencies = {
 }
 
 source = {
-  url = 'git://github.com/mrcjkb/' .. package,
+  url = 'git+https://forge.barrettruth.com/barrettruth/luarocks-tag-release-forgejo.git',
 }
 
 build = {
