@@ -35,4 +35,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build aarch64
-        run: nix develop --accept-flake-config .#ci --command just build-aarch64
+        run: nix develop --accept-flake-config .#ci --command env NIX_CONFIG="system = aarch64-linux" just build-aarch64
